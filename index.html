@@ -2,67 +2,62 @@
 <html lang="ja">
   <head>
     <meta charset="utf-8" />
-    <title>Kawaii Treasure Room</title>
+    <title>Kawaii Treasure Room (Chrome対応版)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <style>
       body { margin:0; background:#ffeef6; }
       .hud { position:fixed; left:0; right:0; top:0; padding:10px; font-family: system-ui, sans-serif; color:#7a2c4e; text-align:center; pointer-events:none; }
+      a { color:#7a2c4e; }
     </style>
   </head>
   <body>
-    <div class="hud">中央の丸で狙ってクリックしてね</div>
+    <div class="hud">中央の丸で狙って、見つめる（またはクリック）で回収できるよ</div>
 
     <a-scene renderer="colorManagement: true; physicallyCorrectLights: true" background="color: #FFF7FB">
-      <!-- アセット置き場 -->
+      <!-- アセット -->
       <a-assets>
-        <!-- 短いクリック音（必要なら自前のmp3/oggに差し替えOK） -->
+        <!-- 音源：必要ならローカル mp3/ogg に差し替え -->
         <audio id="ping" src="https://cdn.jsdelivr.net/gh/naptha/tiny-sfx@latest/ping.mp3" preload="auto" crossorigin="anonymous"></audio>
-        <!-- ふわっとUI用フォント（A-Frame内蔵でもOK） -->
         <img id="wallpaper" crossorigin="anonymous"
              src="https://images.unsplash.com/photo-1523419409543-a5e549c1b2b9?q=80&w=1200&auto=format&fit=crop" />
       </a-assets>
 
       <!-- ライト -->
       <a-entity light="type: ambient; intensity: 0.6; color: #ffffff"></a-entity>
-      <a-entity light="type: directional; intensity: 0.8; castShadow: true" position="2 3 1"></a-entity>
+      <a-entity light="type: directional; intensity: 0.85; castShadow: true" position="2 3 1"></a-entity>
 
       <!-- かわいい部屋（内側表示） -->
       <a-box id="room" width="12" height="4" depth="12"
              position="0 2 -2"
              material="side: back; color: #FFF1F8; roughness:1; metalness:0"></a-box>
-
-      <!-- 床＆ラグ -->
       <a-plane rotation="-90 0 0" width="11.8" height="11.8" position="0 0 -2"
                material="color:#FFF4F9; roughness:1"></a-plane>
       <a-circle position="0 0.01 -2" rotation="-90 0 0" radius="2.2"
                 material="color:#FFD7E2"></a-circle>
-
-      <!-- 窓（壁紙パネル） -->
       <a-plane position="0 2 -7.9" width="4.8" height="2.7"
                material="src: #wallpaper; color:#ffffff"></a-plane>
-
-      <!-- 小家具（かわいい配色の箱） -->
       <a-box position="-3 0.6 -5" depth="1.2" height="1.2" width="2"
              material="color:#E7C7FF"></a-box>
       <a-cylinder position="3 0.5 -4.5" radius="0.45" height="1"
                   material="color:#C5F1FF"></a-cylinder>
 
-      <!-- サウンド再生用エンティティ（コードから鳴らす） -->
-      <a-entity id="sfx" sound="src: #ping; volume: 0.7"></a-entity>
-
-      <!-- カメラ（クリック可能カーソル＆レイキャスト） -->
+      <!-- カメラ（fuseカーソル + レイキャスター） -->
       <a-entity id="rig" position="0 1.6 3">
         <a-camera wasd-controls-enabled="false">
           <a-cursor
-            fuse="false"
+            fuse="true"
+            fuse-timeout="800"
             raycaster="objects: .treasure"
             material="color: #7a2c4e; shader: flat"
           ></a-cursor>
+
+          <!-- サウンド：カメラの子にして non-positional で確実に聞こえる -->
+          <a-entity id="sfx" sound="src: #ping; positional: false; volume: 0.9"></a-entity>
         </a-camera>
       </a-entity>
 
-      <!-- スコアUI（3D内テキスト） -->
+      <!-- スコアUI -->
       <a-entity id="ui" position="0 2.6 -1.2">
         <a-plane width="1.6" height="0.48" color="#FFD7E2" material="opacity:0.9" position="0 0 0"></a-plane>
         <a-entity id="score" text="value: 0 / 5; color: #7a2c4e; align: center; width: 3" position="0 0 0.01"></a-entity>
@@ -76,44 +71,43 @@
         <a-plane id="restartBtn" class="ui-btn" position="0 -0.45 0.02" width="1.2" height="0.34" color="#FFF1F8"></a-plane>
       </a-entity>
 
-      <!-- 生成先コンテナ -->
+      <!-- 生成先 -->
       <a-entity id="treasures"></a-entity>
 
-      <!-- クローン用の「かわいいブロブ」テンプレ -->
+      <!-- かわいいブロブ（テンプレート） -->
       <a-entity id="blobTemplate" visible="false" scale="1 1 1">
-        <!-- もちっとボディ -->
         <a-sphere radius="0.35" position="0 0 0" material="color:#FFD1E5; roughness:0.9; metalness:0"></a-sphere>
-        <!-- おめめ -->
         <a-sphere radius="0.04" position="-0.09 0.05 0.3" material="color:#2a3350"></a-sphere>
         <a-sphere radius="0.04" position="0.09 0.05 0.3" material="color:#2a3350"></a-sphere>
-        <!-- ほっぺ -->
         <a-sphere radius="0.05" position="-0.18 -0.03 0.26" material="color:#FFA6C1"></a-sphere>
         <a-sphere radius="0.05" position="0.18 -0.03 0.26" material="color:#FFA6C1"></a-sphere>
-        <!-- くるくる回転 -->
+        <!-- 常時ゆっくり回転 -->
         <a-entity animation="property: rotation; to: 0 360 0; loop: true; dur: 5000; easing: linear"></a-entity>
       </a-entity>
 
       <script>
-        // ========= 設定 =========
+        // ===== 設定 =====
         const TOTAL = 5;
         let found = 0;
 
-        // 収集可能コンポーネント
+        // 収集コンポーネント
         AFRAME.registerComponent('collectible', {
           schema: { index: { type: 'int' } },
           init: function () {
             const el = this.el;
-            // ホバー時ふわっと
+
+            // マウスオーバー時ふわっと
             el.setAttribute('animation__hover', 'property: scale; startEvents: mouseenter; to: 1.2 1.2 1.2; dur: 150; easing: easeOutQuad');
             el.setAttribute('animation__unhover', 'property: scale; startEvents: mouseleave; to: 1 1 1; dur: 150; easing: easeOutQuad');
 
             el.addEventListener('click', () => {
               if (!el.getAttribute('visible')) return;
 
-              // サウンド再生（A-Frameのsoundを確実に再生）
+              // サウンド（Chromeで確実に鳴らす：ユーザー操作イベント内で再生）
               const sfx = document.querySelector('#sfx');
               if (sfx && sfx.components && sfx.components.sound) {
-                try { sfx.components.sound.stopSound(); sfx.components.sound.playSound(); } catch(e){}
+                try { sfx.components.sound.stopSound(); } catch(e){}
+                try { sfx.components.sound.playSound(); } catch(e){}
               }
 
               // 小さくなって消える
@@ -128,7 +122,7 @@
           }
         });
 
-        // スコア更新＆お祝い表示
+        // スコア & 成功UI
         function updateScore() {
           found += 1;
           const score = document.querySelector('#score');
@@ -140,24 +134,18 @@
             if (ui) ui.setAttribute('visible', false);
             if (c) {
               c.setAttribute('visible', true);
-              // ふわっと登場
               c.setAttribute('animation__pop', 'property: scale; from: 0.6 0.6 0.6; to: 1 1 1; dur: 220; easing: easeOutBack');
             }
           }
         }
 
-        // もう一回ボタン
+        // リスタート
         document.addEventListener('DOMContentLoaded', () => {
           const btn = document.querySelector('#restartBtn');
-          if (btn) {
-            btn.classList.add('ui-btn');
-            btn.setAttribute('hoverable', '');
-            btn.addEventListener('click', restartGame);
-          }
+          if (btn) btn.addEventListener('click', restartGame);
         });
 
         function restartGame() {
-          // 初期化
           found = 0;
           const score = document.querySelector('#score');
           if (score) score.setAttribute('text', 'value', `${found} / ${TOTAL}`);
@@ -166,7 +154,6 @@
           if (ui) ui.setAttribute('visible', true);
           if (c) c.setAttribute('visible', false);
 
-          // 再配置
           clearTreasures();
           spawnTreasures();
         }
@@ -177,29 +164,32 @@
           while (parent.firstChild) parent.removeChild(parent.firstChild);
         }
 
-        // ====== かわいい宝物をランダム配置 ======
+        // ===== かわいい宝物のランダム配置 =====
         function spawnTreasures() {
           const parent = document.querySelector('#treasures');
           const tmpl = document.querySelector('#blobTemplate');
           if (!parent || !tmpl) return;
 
-          const radius = 3.8; // プレイヤーの周囲半径（部屋に合わせて）
+          const radius = 3.8; // 部屋サイズに合わせた半径
           for (let i = 0; i < TOTAL; i++) {
             const angle = (i / TOTAL) * Math.PI * 2 + (Math.random() * 0.8);
-            const dist = radius + (Math.random() * 1.2 - 0.6); // ±0.6
+            const dist = radius + (Math.random() * 1.2 - 0.6);
             const x = Math.cos(angle) * dist;
-            const z = -Math.sin(angle) * dist - 2; // 前方中心
-            const y = 0.7 + Math.random() * 1.1; // 0.7〜1.8m
+            const z = -Math.sin(angle) * dist - 2;
+            const y = 0.7 + Math.random() * 1.1;
 
             const blob = tmpl.cloneNode(true);
-            blob.id = ''; // 重複回避
-            blob.classList.add('treasure');
+            blob.id = ''; // 重複ID回避
             blob.setAttribute('visible', true);
             blob.setAttribute('position', `${x} ${y} ${z}`);
             blob.setAttribute('rotation', `0 ${Math.random()*360} 0`);
             blob.setAttribute('collectible', `index: ${i}`);
 
-            // くるくる回転（個別に付与）
+            // ★レイキャスターが確実に当たるよう、親子すべてに .treasure を付与
+            blob.classList.add('treasure');
+            blob.querySelectorAll('*').forEach(n => n.classList.add('treasure'));
+
+            // 個別回転（見た目の動き）
             blob.setAttribute('animation__spin', 'property: rotation; to: 0 360 0; loop: true; dur: 5000; easing: linear');
 
             parent.appendChild(blob);
