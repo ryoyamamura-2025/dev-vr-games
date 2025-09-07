@@ -1,314 +1,545 @@
-<!DOCTYPE html>
+​<!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="utf-8">
-  <title>VR森の星探しゲーム</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      background: #87CEEB;
-      font-family: system-ui, sans-serif;
-    }
-    
-    .hud {
-      position: fixed;
-      left: 0;
-      right: 0;
-      top: 0;
-      padding: 15px;
-      color: #2F4F2F;
-      text-align: center;
-      pointer-events: none;
-      background: rgba(255,255,255,0.9);
-      font-size: 16px;
-    }
-    
-    .vr-button {
-      position: fixed;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 1000;
-      background: #FF6B6B;
-      color: white;
-      padding: 15px 30px;
-      border: none;
-      border-radius: 25px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      pointer-events: all;
-    }
-    
-    .vr-button:hover {
-      background: #FF5252;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>大阪・関西万博 家族のための1日満喫プラン</title>
+<link rel="stylesheet" href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css)">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
+​:root {
+--primary-color: #007bff;
+--secondary-color: #6c757d;
+--background-color: #f8f9fa;
+--text-color: #333;
+--card-bg: #ffffff;
+--border-color: #dee2e6;
+--timeline-color: #0056b3;
+}
+​* {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+}
+​html {
+scroll-behavior: smooth;
+}
+​body {
+font-family: 'Noto Sans JP', sans-serif;
+line-height: 1.8;
+background-color: var(--background-color);
+color: var(--text-color);
+}
+​.container {
+max-width: 1100px;
+margin: auto;
+padding: 0 20px;
+overflow: hidden;
+}
+​/* Header & Navigation */
+.main-header {
+background: var(--card-bg);
+box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+position: sticky;
+top: 0;
+z-index: 1000;
+}
+​.navbar {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 1rem 0;
+}
+​.navbar.logo {
+font-size: 1.5rem;
+font-weight: 700;
+color: var(--primary-color);
+}
+​.navbar ul {
+display: flex;
+list-style: none;
+}
+​.navbar ul li a {
+color: var(--text-color);
+padding: 0.5rem 1rem;
+text-decoration: none;
+transition: color 0.3s ease;
+}
+​.navbar ul li a:hover {
+color: var(--primary-color);
+}
+​/* Hero Section */
+.hero {
+background: linear-gradient(rgba(0, 123, 255, 0.7), rgba(0, 123, 255, 0.7)), url('https://www.expo2025.or.jp/wp/wp-content/themes/expo2025/assets/images/ogp.jpg') no-repeat center center/cover;
+color: #fff;
+text-align: center;
+padding: 4rem 1rem;
+}
+​.hero h1 {
+font-size: 2.8rem;
+margin-bottom: 1rem;
+}
+​.hero p {
+font-size: 1.2rem;
+}
+​/* Section Styling */
+.section {
+padding: 4rem 0;
+}
+​.section-title {
+text-align: center;
+font-size: 2.2rem;
+margin-bottom: 3rem;
+color: var(--primary-color);
+position: relative;
+}
+​.section-title::after {
+content: '';
+position: absolute;
+bottom: -10px;
+left: 50%;
+transform: translateX(-50%);
+width: 80px;
+height: 4px;
+background: var(--primary-color);
+border-radius: 2px;
+}
+​/* Preparation Section */
+.prep-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+gap: 2rem;
+}
+​.prep-card {
+background: var(--card-bg);
+padding: 2rem;
+border-radius: 8px;
+box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+border-left: 5px solid var(--primary-color);
+}
+​.prep-card h3 {
+font-size: 1.5rem;
+margin-bottom: 1rem;
+color: var(--primary-color);
+}
+​.prep-card i {
+margin-right: 0.5rem;
+}
+​.prep-card ul {
+list-style: none;
+padding-left: 0;
+}
+​.prep-card ul li {
+margin-bottom: 0.5rem;
+display: flex;
+align-items: center;
+}
+​.prep-card ul li::before {
+content: '\f00c'; /* Font Awesome check icon */
+font-family: 'Font Awesome 6 Free';
+font-weight: 900;
+color: #28a745;
+margin-right: 10px;
+}
+​/* Timeline Section */
+.timeline {
+position: relative;
+max-width: 800px;
+margin: 0 auto;
+}
+​.timeline::after {
+content: '';
+position: absolute;
+width: 6px;
+background-color: var(--timeline-color);
+top: 0;
+bottom: 0;
+left: 50%;
+margin-left: -3px;
+}
+​.timeline-item {
+padding: 10px 40px;
+position: relative;
+background-color: inherit;
+width: 50%;
+}
+​.timeline-item::after {
+content: '';
+position: absolute;
+width: 25px;
+height: 25px;
+right: -17px;
+background-color: white;
+border: 4px solid var(--timeline-color);
+top: 15px;
+border-radius: 50%;
+z-index: 1;
+}
+​.left {
+left: 0;
+}
+​.right {
+left: 50%;
+}
+​.left::before {
+content: " ";
+height: 0;
+position: absolute;
+top: 22px;
+width: 0;
+z-index: 1;
+right: 30px;
+border: medium solid white;
+border-width: 10px 0 10px 10px;
+border-color: transparent transparent transparent white;
+}
+​.right::before {
+content: " ";
+height: 0;
+position: absolute;
+top: 22px;
+width: 0;
+z-index: 1;
+left: 30px;
+border: medium solid white;
+border-width: 10px 10px 10px 0;
+border-color: transparent white transparent transparent;
+}
+​.right::after {
+left: -16px;
+}
+​.content {
+padding: 20px 30px;
+background-color: white;
+position: relative;
+border-radius: 6px;
+box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+​.content h3 {
+color: var(--primary-color);
+font-size: 1.2rem;
+}
+​.content.time {
+font-weight: 700;
+font-size: 1.3rem;
+margin-bottom: 0.5rem;
+}
+​.content.hint {
+background-color: #e7f3ff;
+border-left: 4px solid var(--primary-color);
+padding: 10px;
+margin-top: 10px;
+font-size: 0.9rem;
+border-radius: 4px;
+}
+​.content.hint i {
+color: var(--primary-color);
+}
+​/* Dining Section */
+.dining-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+gap: 2rem;
+}
+​.dining-card {
+background: var(--card-bg);
+border-radius: 8px;
+box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+overflow: hidden;
+display: flex;
+flex-direction: column;
+}
+​.dining-card-header {
+background: var(--primary-color);
+color: white;
+padding: 1.5rem;
+text-align: center;
+}
+​.dining-card-header h3 {
+margin: 0;
+font-size: 1.5rem;
+}
+​.dining-card-body {
+padding: 1.5rem;
+flex-grow: 1;
+}
+​.dining-card-body h4 {
+color: var(--secondary-color);
+margin-bottom: 0.5rem;
+}
+​/* Checklist Table */
+.checklist-table {
+width: 100%;
+border-collapse: collapse;
+margin: 2rem 0;
+box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+background: var(--card-bg);
+}
+​.checklist-table th,.checklist-table td {
+border: 1px solid var(--border-color);
+padding: 12px 15px;
+text-align: left;
+}
+​.checklist-table th {
+background-color: var(--primary-color);
+color: white;
+}
+​.checklist-table tr:nth-child(even) {
+background-color: #f2f2f2;
+}
+​/* Footer */
+.main-footer {
+background: var(--text-color);
+color: #fff;
+text-align: center;
+padding: 2rem 0;
+margin-top: 2rem;
+}
+​/* Responsive */
+@media screen and (max-width: 768px) {
+.navbar {
+flex-direction: column;
+}
+.navbar ul {
+margin-top: 1rem;
+flex-wrap: wrap;
+justify-content: center;
+}
+.hero h1 {
+font-size: 2.2rem;
+}
+.timeline::after {
+left: 31px;
+}
+.timeline-item {
+width: 100%;
+padding-left: 70px;
+padding-right: 25px;
+}
+.timeline-item::before {
+left: 60px;
+border: medium solid white;
+border-width: 10px 10px 10px 0;
+border-color: transparent white transparent transparent;
+}
+.left::after,.right::after {
+left: 15px;
+}
+.right {
+left: 0%;
+}
+}
+</style>
 </head>
 <body>
-  <div class="hud">
-    🌟 森の中の星を見つけよう！中央の丸で狙って見つめる（またはクリック）で回収できるよ
-  </div>
-  
-  <button class="vr-button" onclick="enterVRMode()">🥽 VRモードで遊ぶ</button>
-
-  <a-scene renderer="colorManagement: true; physicallyCorrectLights: true" background="color: #87CEEB">
-    <!-- アセット -->
-    <a-assets>
-      <audio id="star-sound" src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmIbBzeVyOzNdykFJH/A6NyRQAoUYK7q5KJTFT1Dv+z5sGAaFzKS2OnIdiYGOoO87NOFOAgbYLTm47NUFApGntjxvF4aFzGQ1O/JdCUFN4K+8N2SQw8VPa/u7qBBFA1A0PTYx3krFz6S2ezXZDEPJ4G47+CdQBA4k9j94qtjGBIEruPmn1MKFi/D9NuJLQMgLKjz2plJGwMw0fDXik8DCy+59+OJKQAFp/z1lnH/C0HN7N6HPgAAp+Xdz58AAAAAAAAAAAAAAAlhZmZwAAAAAAAAAAAAAAAAAAAAAgAAACtaVGmwAABYWnQpAAAAAADY2thOAAAAWFp0NQAAAAC4uLhOAQAAWFp0IQAAAABY2thOAAAAWFp0HQAAAAC4uLhOAAAAWFp0JQAAAACY2thOAAAAWFp0HQAAAAC4uLhOAAAAWFp0KQAAAABY2thOAAAAWFp0HQAAAAC4uLhOAAAAWFp0KQAAAACY2thOAAAAWFp0HQAAAAC4uLhOAAAAWFp0KQAAAABY2thOAAAAWFp0HQAAAAC4uLhOAAAAWFp0JQAAAACY2thOAAAAWFp0HQAAAAC4uLhOAAAAWFp0JQAAAABY2thOAAAAWFp0HQAAAAC4uLhOAAAAWFp0JQAAAACY2thOAAAAWFp0HQAAAAC4uLhOAAAAWFp0JQAAAABY2thOAAAAWFp0HQAAAAC4uLhOAAAAWFp0JQAAAACY2thOAAAAWFp0HQAAAAC4uLhOAAAAWFp0JQAAAABY2thOAAAAWFp0HQAAAAC4uLhOAAAAWFp0JQAAAACY2thOAAAAWFp0HQAAAAC4uLhOAAAAWFp0JQAAAABY2thOAAAAWFp0HQAAAAC4uLhOAAAAWFp0JQAAAACY2thOAAAAWFp0HQAAAAC4uLhOAAAAWFp0JQAAAABY2thOAAAAWFp0HQAAAAC4uLhOAAAAWFp0JQAAAACY2thOAAAAWFp0HQAAAAC4uLhOAAAAWFp0JQAAAABY2thOAAAAWFp0HQAAAAC4uLhOAAAAWFp0JQAAAACY2thOAAAAWFp0HQAAAAC4uLhOAAAAWFp0JQAAAABY2thOAAAAWFp0HQAAAAC4uLhOAAAAWFp0JQAAAACY2thOAAAAWFp0HQAAAAC4uLhOAAAAWFp0JQAAAABY2thOAAAAWFp0HQAAAAC4uLhOaaaaa" preload="auto"></audio>
-    </a-assets>
-
-    <!-- ライティング -->
-    <a-entity light="type: ambient; intensity: 0.6; color: #ffffff"></a-entity>
-    <a-entity light="type: directional; intensity: 0.8; castShadow: true" position="5 10 5"></a-entity>
-
-    <!-- 地面（草原） -->
-    <a-plane position="0 0 0" rotation="-90 0 0" width="30" height="30" 
-             material="color: #228B22; roughness: 1"></a-plane>
-
-    <!-- 森の木々 -->
-    <!-- 大きな木1 -->
-    <a-entity position="-8 0 -8">
-      <a-cylinder radius="0.8" height="6" color="#8B4513" position="0 3 0"></a-cylinder>
-      <a-sphere radius="3.5" color="#228B22" position="0 7 0"></a-sphere>
-    </a-entity>
-    
-    <!-- 大きな木2 -->
-    <a-entity position="12 0 -10">
-      <a-cylinder radius="1" height="8" color="#8B4513" position="0 4 0"></a-cylinder>
-      <a-sphere radius="4" color="#228B22" position="0 9 0"></a-sphere>
-    </a-entity>
-    
-    <!-- 大きな木3 -->
-    <a-entity position="-15 0 5">
-      <a-cylinder radius="1.2" height="7" color="#8B4513" position="0 3.5 0"></a-cylinder>
-      <a-sphere radius="4.5" color="#228B22" position="0 8.5 0"></a-sphere>
-    </a-entity>
-
-    <!-- 中くらいの木々 -->
-    <a-entity position="8 0 8">
-      <a-cylinder radius="0.6" height="4" color="#8B4513" position="0 2 0"></a-cylinder>
-      <a-sphere radius="2.5" color="#2F4F2F" position="0 5 0"></a-sphere>
-    </a-entity>
-    
-    <a-entity position="-5 0 10">
-      <a-cylinder radius="0.5" height="3.5" color="#8B4513" position="0 1.75 0"></a-cylinder>
-      <a-sphere radius="2" color="#228B22" position="0 4.2 0"></a-sphere>
-    </a-entity>
-
-    <!-- 茂みと花 -->
-    <a-sphere position="4 0.8 5" radius="1.5" color="#228B22"></a-sphere>
-    <a-sphere position="-3 0.6 -3" radius="1.2" color="#2F4F2F"></a-sphere>
-    <a-sphere position="7 0.7 -2" radius="1.3" color="#228B22"></a-sphere>
-    
-    <!-- 花 -->
-    <a-entity position="3 0 2">
-      <a-cylinder radius="0.05" height="0.8" color="#90EE90" position="0 0.4 0"></a-cylinder>
-      <a-sphere radius="0.25" color="#FF69B4" position="0 0.9 0"></a-sphere>
-    </a-entity>
-    
-    <a-entity position="-2 0 4">
-      <a-cylinder radius="0.04" height="0.6" color="#90EE90" position="0 0.3 0"></a-cylinder>
-      <a-sphere radius="0.2" color="#FFB6C1" position="0 0.7 0"></a-sphere>
-    </a-entity>
-
-    <!-- カメラ（fuseカーソル + レイキャスター） -->
-    <a-entity id="rig" position="0 1.6 3">
-      <a-camera wasd-controls>
-        <a-cursor
-          fuse="true"
-          fuse-timeout="1000"
-          raycaster="objects: .star"
-          material="color: #FFD700; shader: flat"
-          geometry="radiusInner: 0.02; radiusOuter: 0.03"
-        ></a-cursor>
-
-        <!-- サウンド：カメラの子にして non-positional で確実に聞こえる -->
-        <a-entity id="sfx" sound="src: #star-sound; positional: false; volume: 0.7"></a-entity>
-      </a-camera>
-    </a-entity>
-
-    <!-- スコアUI -->
-    <a-entity id="ui" position="0 2.8 -1.5">
-      <a-plane width="2" height="0.6" color="#228B22" material="opacity: 0.9" position="0 0 0"></a-plane>
-      <a-entity id="score" text="value: 0 / 5; color: white; align: center; width: 4" position="0 0 0.01"></a-entity>
-    </a-entity>
-
-    <!-- おめでとうUI -->
-    <a-entity id="congrats" visible="false" position="0 2.2 -1.8">
-      <a-plane width="3" height="1.5" color="#FFD700" material="opacity: 0.95" position="0 0 0"></a-plane>
-      <a-entity text="value: 🎉 おめでとう！; color: #333; align: center; width: 5" position="0 0.4 0.01"></a-entity>
-      <a-entity text="value: すべての星を見つけたね！; color: #333; align: center; width: 4" position="0 0.1 0.01"></a-entity>
-      <a-entity text="value: もう一度遊ぶ; color: #333; align: center; width: 3" position="0 -0.2 0.01"></a-entity>
-      <a-plane id="restartBtn" class="ui-btn" position="0 -0.5 0.02" width="1.5" height="0.4" color="#228B22"></a-plane>
-    </a-entity>
-
-    <!-- 星の生成先 -->
-    <a-entity id="stars-container"></a-entity>
-
-    <!-- 雲 -->
-    <a-sphere position="20 12 -15" radius="3" color="#FFFFFF" opacity="0.8"></a-sphere>
-    <a-sphere position="-25 14 -10" radius="2.5" color="#FFFFFF" opacity="0.8"></a-sphere>
-
-    <script>
-      // ===== 設定 =====
-      const TOTAL_STARS = 5;
-      let foundStars = 0;
-
-      // VRモード関数
-      function enterVRMode() {
-        const scene = document.querySelector('a-scene');
-        if (scene && scene.enterVR) {
-          scene.enterVR();
-        } else {
-          // A-FrameのVRボタンを探してクリック
-          const vrButton = document.querySelector('.a-enter-vr-button');
-          if (vrButton) {
-            vrButton.click();
-          } else {
-            alert('VRヘッドセットが検出されていません。PCモードでお楽しみください！');
-          }
-        }
-      }
-
-      // 星の収集コンポーネント
-      AFRAME.registerComponent('star-collectible', {
-        schema: { index: { type: 'int' } },
-        init: function () {
-          const el = this.el;
-
-          // ホバーアニメーション
-          el.setAttribute('animation__hover', 
-            'property: scale; startEvents: mouseenter; to: 1.3 1.3 1.3; dur: 200; easing: easeOutQuad');
-          el.setAttribute('animation__unhover', 
-            'property: scale; startEvents: mouseleave; to: 1 1 1; dur: 200; easing: easeOutQuad');
-
-          // クリックイベント
-          el.addEventListener('click', () => {
-            if (!el.getAttribute('visible')) return;
-
-            // サウンド再生
-            const sfx = document.querySelector('#sfx');
-            if (sfx && sfx.components && sfx.components.sound) {
-              try { 
-                sfx.components.sound.stopSound(); 
-                sfx.components.sound.playSound(); 
-              } catch(e) {
-                console.log('音声再生エラー:', e);
-              }
-            }
-
-            // 星が消えるアニメーション
-            el.setAttribute('animation__collect', {
-              property: 'scale', 
-              to: '0.01 0.01 0.01', 
-              dur: 300, 
-              easing: 'easeInQuad'
-            });
-            
-            el.setAttribute('animation__glow', {
-              property: 'material.emissiveIntensity', 
-              to: 2, 
-              dur: 150, 
-              easing: 'easeOutQuad'
-            });
-
-            setTimeout(() => {
-              el.setAttribute('visible', false);
-              updateScore();
-            }, 320);
-          });
-        }
-      });
-
-      // スコア更新
-      function updateScore() {
-        foundStars += 1;
-        const score = document.querySelector('#score');
-        if (score) {
-          score.setAttribute('text', 'value', `${foundStars} / ${TOTAL_STARS}`);
-        }
-
-        if (foundStars >= TOTAL_STARS) {
-          setTimeout(() => {
-            const ui = document.querySelector('#ui');
-            const congrats = document.querySelector('#congrats');
-            if (ui) ui.setAttribute('visible', false);
-            if (congrats) {
-              congrats.setAttribute('visible', true);
-              congrats.setAttribute('animation__pop', 
-                'property: scale; from: 0.5 0.5 0.5; to: 1 1 1; dur: 400; easing: easeOutBack');
-            }
-          }, 300);
-        }
-      }
-
-      // リスタート機能
-      document.addEventListener('DOMContentLoaded', () => {
-        const btn = document.querySelector('#restartBtn');
-        if (btn) {
-          btn.addEventListener('click', restartGame);
-        }
-      });
-
-      function restartGame() {
-        foundStars = 0;
-        const score = document.querySelector('#score');
-        if (score) score.setAttribute('text', 'value', `${foundStars} / ${TOTAL_STARS}`);
-        
-        const ui = document.querySelector('#ui');
-        const congrats = document.querySelector('#congrats');
-        if (ui) ui.setAttribute('visible', true);
-        if (congrats) congrats.setAttribute('visible', false);
-
-        clearStars();
-        spawnStars();
-      }
-
-      function clearStars() {
-        const container = document.querySelector('#stars-container');
-        if (!container) return;
-        while (container.firstChild) {
-          container.removeChild(container.firstChild);
-        }
-      }
-
-      // 星のランダム配置
-      function spawnStars() {
-        const container = document.querySelector('#stars-container');
-        if (!container) return;
-
-        const positions = [
-          { x: -7, y: 4, z: -7 },
-          { x: 4.5, y: 1.8, z: 5 },
-          { x: -2.5, y: 1.2, z: 3.5 },
-          { x: 11, y: 8, z: -9 },
-          { x: 8, y: 2.5, z: 7.5 }
-        ];
-
-        positions.forEach((pos, i) => {
-          const star = document.createElement('a-dodecahedron');
-          star.setAttribute('position', `${pos.x} ${pos.y} ${pos.z}`);
-          star.setAttribute('radius', '0.4');
-          star.setAttribute('color', '#FFD700');
-          star.setAttribute('material', 'metalness: 0.3; roughness: 0.2; emissive: #FFD700; emissiveIntensity: 0.5');
-          star.setAttribute('animation', 'property: rotation; to: 0 360 0; loop: true; dur: 4000; easing: linear');
-          star.setAttribute('star-collectible', `index: ${i}`);
-          star.classList.add('star');
-
-          container.appendChild(star);
-        });
-      }
-
-      // A-Frameの初期化を待ってゲーム開始
-      document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-          spawnStars();
-        }, 1000);
-      });
-    </script>
-  </a-scene>
-</body>
+​<header class="main-header">
+<div class="container">
+<nav class="navbar">
+<div class="logo"><i class="fa-solid fa-map-location-dot"></i> 万博家族旅行プラン</div>
+<ul>
+<li><a href="#prep">出発準備</a></li>
+<li><a href="#plan">1日プラン</a></li>
+<li><a href="#dining">食事ガイド</a></li>
+<li><a href="#checklist">持ち物リスト</a></li>
+</ul>
+</nav>
+</div>
+</header>
+​<section class="hero">
+<div class="container">
+<h1>大阪・関西万博 家族のための1日満喫プラン</h1>
+<p>2025年9月17日、神戸市中央区から出発するご家族へ贈る、最高の万博体験ガイド</p>
+</div>
+</section>
+​<main>
+<section id="prep" class="section">
+<div class="container">
+<h2 class="section-title">冒険の前の最終確認</h2>
+<div class="prep-grid">
+<div class="prep-card">
+<h3><i class="fa-solid fa-list-check"></i> 必須チェックリスト</h3>
+<ul>
+<li>万博入場チケット（デジタル/印刷）</li>
+<li>舞洲駐車場の予約確認証</li>
+<li>EXPO2025デジタルウォレット設定</li>
+<li>スマートフォン満充電</li>
+<li>健康保険証・こども医療費受給者証</li>
+</ul>
+</div>
+<div class="prep-card">
+<h3><i class="fa-solid fa-shirt"></i> 9月17日の服装戦略</h3>
+<p>9月中旬の大阪は残暑が予想されますが、朝晩や海沿いは涼しいことも 。脱ぎ着しやすい羽織もの（パーカー等）が必須です 。広大な会場を歩くため、履き慣れた靴を選びましょう。</p>
+</div>
+<div class="prep-card">
+<h3><i class="fa-solid fa-star"></i> この日だけの特別イベント</h3>
+<p>9月17日は「大阪ウィーク～秋～」の最終日 。さらに、ギャラリーWESTでは1970年万博を3DCGで再現する「Back to EXPO'70」が開催されます 。世代を超えて楽しめる特別な一日になります！</p>
+</div>
+</div>
+</div>
+</section> 
+​<section id="plan" class="section" style="background-color: #fff;">
+<div class="container">
+<h2 class="section-title">1日のモデルプラン</h2>
+<div class="timeline">
+<div class="timeline-item left">
+<div class="content">
+<div class="time">7:30 AM</div>
+<h3><i class="fa-solid fa-car"></i> 自宅出発</h3>
+<p>神戸市中央区を出発。阪神高速5号湾岸線で舞洲へ。所要時間は約30-35分です 。</p>
+</div>
+</div>
+<div class="timeline-item right">
+<div class="content">
+<div class="time">8:15 AM - 9:00 AM</div>
+<h3><i class="fa-solid fa-bus"></i> 駐車場到着＆シャトルバス</h3>
+<p>舞洲駐車場に到着後、シャトルバスで会場へ。バスの待ち時間を含め約40分を見込み、西ゲートに到着します 。</p>
+</div>
+</div>
+<div class="timeline-item left">
+<div class="content">
+<div class="time">9:15 AM - 10:15 AM</div>
+<h3><i class="fa-solid fa-robot"></i> PASONA NATUREVERSE</h3>
+<p>西ゲートから近いパビリオン。アトムやブラック・ジャックが登場し、お子様も楽しめます 。</p>
+</div>
+</div>
+<div class="timeline-item right">
+<div class="content">
+<div class="time">10:30 AM - 11:15 AM</div>
+<h3><i class="fa-solid fa-city"></i> 「未来の都市」パビリオン</h3>
+<p>参加者の選択で未来が変わる「Mirai Theater」を体験。家族で協力して楽しめます 。</p>
+</div>
+</div>
+<div class="timeline-item left">
+<div class="content">
+<div class="time">11:30 AM - 12:00 PM</div>
+<h3><i class="fa-solid fa-camera-retro"></i> ミャクミャクと記念撮影</h3>
+<p>公式キャラクターとの記念撮影タイム！当日の登場スケジュールをアプリで確認しましょう 。</p>
+</div>
+</div>
+<div class="timeline-item right">
+<div class="content">
+<div class="time">12:30 PM - 1:30 PM</div>
+<h3><i class="fa-solid fa-utensils"></i> 昼食休憩</h3>
+<p>持参したお弁当をリング下のベンチなどで。会場の喧騒から離れてリフレッシュ。</p>
+<div class="hint"><i class="fa-solid fa-circle-info"></i> 食事の選択肢は<a href="#dining">食事ガイド</a>で詳しく解説！</div>
+</div>
+</div>
+<div class="timeline-item left">
+<div class="content">
+<div class="time">1:30 PM - 2:30 PM</div>
+<h3><i class="fa-solid fa-clock-rotate-left"></i> 特別展「Back to EXPO'70」</h3>
+<p>ギャラリーWESTで開催。3DCGで再現された1970年万博を体験。世代間の会話が弾むこと間違いなし 。</p>
+</div>
+</div>
+<div class="timeline-item right">
+<div class="content">
+<div class="time">2:45 PM - 4:30 PM</div>
+<h3><i class="fa-solid fa-earth-europe"></i> 欧州パビリオン巡り</h3>
+<p>スペイン館やセルビア館などを巡ります。ベビーカーでの優先入場を積極的に活用しましょう 。</p>
+<div class="hint"><i class="fa-solid fa-baby-carriage"></i> <b>ベビーカーハック:</b> スペイン館はエレベーター利用で実質的な優先レーンに 。他のパビリオンでもスタッフに尋ねてみましょう ！</div>
+</div>
+</div>
+<div class="timeline-item left">
+<div class="content">
+<div class="time">4:30 PM - 5:30 PM</div>
+<h3><i class="fa-solid fa-ice-cream"></i> 休憩＆おやつタイム</h3>
+<p>「静けさの森」でクールダウン 。「ミャクミャクアイス」でエネルギーをチャージしましょう 。</p>
+</div>
+</div>
+<div class="timeline-item right">
+<div class="content">
+<div class="time">5:30 PM - 7:00 PM</div>
+<h3><i class="fa-solid fa-sun"></i> サンセットウォーク＆お土産</h3>
+<p>夕日に染まる会場を散策。ライトアップも美しい時間帯です 。最後に西ゲート近くのストアでお土産を購入します。</p>
+</div>
+</div>
+<div class="timeline-item left">
+<div class="content">
+<div class="time">7:00 PM - 7:30 PM</div>
+<h3><i class="fa-solid fa-person-walking-arrow-right"></i> 会場出発</h3>
+<p>閉場間際の混雑を避けるため、少し早めに西ゲートのシャトルバス乗り場へ向かいます。</p>
+</div>
+</div>
+<div class="timeline-item right">
+<div class="content">
+<div class="time">7:30 PM以降</div>
+<h3><i class="fa-solid fa-plate-wheat"></i> 夕食＆帰路</h3>
+<p>会場を出てからのお楽しみ！ユニバーサル・シティウォークか神戸ハーバーランドで夕食をとり、神戸の自宅へ 。</p>
+</div>
+</div>
+</div>
+</div>
+</section> 
+​<section id="dining" class="section">
+<div class="container">
+<h2 class="section-title">食事ガイド：気分で選べる選択肢</h2>
+<h3 style="text-align:center; margin-bottom: 2rem; font-size: 1.5rem;">夕食オプション</h3>
+<div class="dining-grid">
+<div class="dining-card">
+<div class="dining-card-header">
+<h3>選択肢A：ユニバーサル・シティウォーク</h3>
+</div>
+<div class="dining-card-body">
+<h4>コンセプト</h4>
+<p>万博の興奮をそのままに、活気ある雰囲気で食事を楽しみたいご家族向け。</p>
+<h4>おすすめ</h4>
+<p>熟成牛ステーキの「Gottie'sBEEF」や、和食の「がんこ」など、子連れ向けのレストランが豊富です 。</p>
+</div>
+</div>
+<div class="dining-card">
+<div class="dining-card-header">
+<h3>選択肢B：神戸ハーバーランド</h3>
+</div>
+<div class="dining-card-body">
+<h4>コンセプト</h4>
+<p>美しい夜景と共に、一日の冒険を静かに振り返りたいご家族向け。</p>
+<h4>おすすめ</h4>
+<p>帰り道にありアクセス抜群。夜景が綺麗なイタリアン「オステリア ガウダンテ」などがおすすめです 。</p>
+</div>
+</div>
+</div>
+</div>
+</section> 
+​<section id="checklist" class="section" style="background-color: #fff;">
+<div class="container">
+<h2 class="section-title">持ち物チェックリスト</h2>
+<table class="checklist-table">
+<thead>
+<tr>
+<th>カテゴリー</th>
+<th>アイテム</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>書類・デジタル</strong></td>
+<td>万博入場チケット、舞洲駐車場の予約確認証、EXPO2025デジタルウォレット設定済みスマホ、携帯用バッテリー、健康保険証</td>
+</tr>
+<tr>
+<td><strong>衣類・快適グッズ</strong></td>
+<td>薄手の羽織もの、帽子、サングラス、履き慣れた靴、ハンカチ・タオル</td>
+</tr>
+<tr>
+<td><strong>飲食</strong></td>
+<td>（昼食用）お弁当、詰め替え可能な水筒、軽食（お菓子など）</td>
+</tr>
+<tr>
+<td><strong>お子様ケア</strong></td>
+<td>おむつ・おしりふき、ベビーカー、お気に入りのおもちゃや絵本</td>
+</tr>
+<tr>
+<td><strong>健康・安全</strong></td>
+<td>日焼け止め、救急セット（絆創膏など）、常備薬、ウェットティッシュ、ゴミ袋</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+​<footer class="main-footer">
+<div class="container">
+<p>このプランで、ご家族にとって忘れられない万博の一日を！</p>
+</div>
+</footer>
+​</body>
 </html>
